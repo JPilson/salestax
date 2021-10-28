@@ -1,5 +1,6 @@
 
 import {openDB, deleteDB, wrap, unwrap, IDBPTransaction, StoreNames, IDBPDatabase} from 'idb';
+import ProductModel, {ProductCategory} from "@/models/Product.model";
 
 export enum DataInterfaceType {
 
@@ -24,12 +25,13 @@ export default class DataBase {
 
 
 
+
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     constructor() {
 
     }
 
-    static async openDb() {
+    static async openDb():Promise<void> {
 
         try {
 
@@ -74,7 +76,8 @@ export default class DataBase {
     }
 
 
-    static  async insertInto<T>(TABLE:TABLE_NAME,VALUE:T){
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+    static  async insertInto<T>(TABLE:TABLE_NAME,VALUE:T):Promise<any>{
         openDB(this.DB_NAME,this.VERSION).then((db)=>{
             db.transaction([TABLE],"readwrite")
                 .objectStore(TABLE).put(VALUE).catch((error:Error) =>{
@@ -87,7 +90,8 @@ export default class DataBase {
     }
 
 
-    static READ_FROM_DB<T>(TABLE:TABLE_NAME,GET_BY:string,REFERENCE:string|number){
+
+    static READ_FROM_DB<T>(TABLE:TABLE_NAME,GET_BY:string,REFERENCE:string|number):Promise<any>{
         return  openDB(this.DB_NAME,this.VERSION).then((db)=>{
 
             const transaction =  db.transaction(TABLE,"readonly").objectStore(TABLE);

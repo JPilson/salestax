@@ -63,6 +63,11 @@ export default class Utils {
         return new Intl.NumberFormat(locale, options).format(value)
 
     }
+    static generateFakeId(prefix =  " "):string {
+        const date = new Date();
+        return (prefix +  date.getUTCHours().toString() + date.getDate().toString().toString() + date.getUTCFullYear().toString()).trim()
+
+    }
 
      static tel(number:string):void{
         try {
