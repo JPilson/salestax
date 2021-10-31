@@ -1,6 +1,6 @@
 <template>
-  <div :class="`custom-text-view ${textDecoration}`" :style="`margin-top: -1px;`" >
-    <span   :style="textViewStyle "  :class="textViewCss+' text-center'">{{text}}</span>
+  <div :class="`custom-text-view ${textDecoration} break-line`" :style="`margin-top: -1px;`" >
+    <span   :style="textViewStyle "  :class="textViewCss+' text-center break-line'">{{text}}</span>
   </div>
 </template>
 
@@ -122,6 +122,9 @@
   }
   .custom-text-view .text-lowercase {
     text-transform: lowercase;
+  }
+  .break-line {
+    white-space: pre-line
   }
   .custom-text-view .textWrap {
     white-space: nowrap !important;

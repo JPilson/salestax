@@ -69,22 +69,8 @@ export default class Utils {
 
     }
 
-     static tel(number:string):void{
-        try {
-            let phone;
-            if (number.includes("+244"))
-                phone = number;
-            else
-                phone = "+244" + number.trim();
 
-            window.open(`tel:${phone}`);
-        } catch (e) {
-            const erro =  new Error();
-            erro.name = "Nao foi Possível ligar"
-            erro.stack = e.stack;
-            throw erro;
-        }
-    }
+
 
 
     static  onThemeChange = (ThemeMediaQuery:MediaQueryListEvent|MediaQueryList,vuetifyTheme: Theme):void=>{

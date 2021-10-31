@@ -16,7 +16,6 @@
     import Vue from "vue"
     import Component from "vue-class-component";
     import TextView from "@/utils/UI/TextView/TextView.vue";
-    import Notify, {notificationTypes} from "@/utils/UI/Toast/Notify";
     import {Prop} from "vue-property-decorator";
 
 

@@ -1,5 +1,4 @@
 import TaxHelper from "@/utils/TaxHelper";
-import Utils from "@/utils/Utils";
  interface ProductInterface {
     id?:string
     name:string;
@@ -17,7 +16,8 @@ export enum ProductCategory {
     medical,
     toy,
     electronic,
-    discography
+    discography,
+    other
 
 
 }
@@ -52,11 +52,12 @@ export default class ProductModel implements ProductInterface{
     }
     setPriceAfterTax():number {
         this.priceAfterTax =  this.taxHelper.valueAfterTax(this.price,this.isImported,this.isTaxable)
-        this.totalOfTax = parseFloat((this.priceAfterTax - this.price).toFixed(3))
-        // this.totalOfTax = Math.ceil(this.priceAfterTax - this.price)
+        this.totalOfTax = parseFloat((this.priceAfterTax - this.price).toFixed(2))
+
 
         return this.priceAfterTax
     }
+
 
 
 

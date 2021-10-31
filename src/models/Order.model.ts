@@ -27,13 +27,36 @@ export default class Order implements OrderInterface{
             this.totalAmount = props.totalAmount ?? 0
         }
             // this.id = Utils.generateFakeId("order")
-
     }
 
 
 
     totalOrder(): number {
         return this.products.length ;
+    }
+
+    calculateTaxOrder():void {
+        this.products.forEach(product => {
+            product.setPriceAfterTax() // To make sure that the priceAfterTaxes is set
+            this.salesTax = parseFloat((this.salesTax + product.totalOfTax).toFixed(2))
+            this.totalAmount  =  parseFloat((this.totalAmount + product.priceAfterTax).toFixed(2))
+        })
+    }
+
+    /**
+     * For Test Purpose
+     */
+    printOrderDetails():string {
+        let output = ""
+        this.calculateTaxOrder();
+        this.products.forEach(product => {
+            output =  output +`\n${product.name}: ${product.priceAfterTax.toFixed(2)}`
+
+        })
+        output =  output +`\nSales Taxes: ${this.salesTax.toFixed(2)}\nTotal: ${this.totalAmount.toFixed(2)}`
+        return output
+
+
     }
 
 

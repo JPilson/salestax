@@ -2,29 +2,28 @@ import {HexAA} from "@/values/Colors";
 
 export default class Modifier {
 
-    public static blurEffect = (blur =30,border=10,background="0, 0, 0, 0.16",opacity=0.16)=>{
+
+    constructor() {
+    //
+    }
+
+    public static blurEffect = (blur =30,border=10,background="0, 0, 0, 0.16",opacity=0.16):string=>{
         return `border-radius: ${border}px  ${border}px 0 0;
      backdrop-filter: blur(${blur}px)!important;
      --webkit-backdrop-filter: blur(${blur}px)!important;
      background-color: rgba(${background},${opacity});"`
     }
-    public static frame = (width:number,height:number)=>{
+    public static frame = (width:number,height:number):string=>{
         return `width: ${width}px!important;height:${height}px!important;`
     }
-    public static background = (color:{red:number;green:number;blue:number},opacity=1)=>{
+    public static background = (color:{red:number;green:number;blue:number},opacity=1):string=>{
         return `background-color:rgba(${color.red},${color.green},${color.red},${opacity});`;
     }
-    public static shadow = (x:number,y:number,blur:number,color:string,opacity?:HexAA )=> {
+    public static shadow = (x:number,y:number,blur:number,color:string,opacity?:HexAA ):string=> {
         return ` box-shadow:${x}px ${y}px ${blur}px ${color}${opacity??HexAA.P100}`;
     }
 
-    public static padding = ()=>{
-        return ``
-    }
 
-    constructor() {
-
-    }
 
     /**
      * width: 405px;
