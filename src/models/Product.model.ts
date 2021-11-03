@@ -1,23 +1,26 @@
 import TaxHelper from "@/utils/TaxHelper";
- interface ProductInterface {
+import Utils, {dateFormats} from "@/utils/Utils";
+
+interface ProductInterface {
     id?:string
     name:string;
     description?:string
     isImported:boolean
     price:number
     category:ProductCategory
-    img?:string,
+    img?:any,
     setPriceAfterTax?:()=>void,
-     totalOfTax?:number,
+    totalOfTax?:number,
+    total?:number
 }
 export enum ProductCategory {
-    book,
-    food,
-    medical,
-    toy,
-    electronic,
-    discography,
-    other
+    book="book",
+    food="food",
+    medical="medical",
+    toy="toy",
+    electronic= "electronic",
+    discography = "discography",
+    other = "other"
 
 
 }
@@ -34,12 +37,14 @@ export default class ProductModel implements ProductInterface{
     img!:string
     priceAfterTax!:number
     totalOfTax = 0;
+    total = 1
 
 
 
 
     constructor(props?:ProductInterface) {
-        this.id  = "Utils.generateFakeId()"
+
+
         if(props){
             this.name = props.name;
             this.description = props.description??""
@@ -49,6 +54,9 @@ export default class ProductModel implements ProductInterface{
             this.category = props.category
             this.img = props.img??""
         }
+        setTimeout(async ()=> {
+            this.id = this.generateFakeId()
+        },1000)
     }
     setPriceAfterTax():number {
         this.priceAfterTax =  this.taxHelper.valueAfterTax(this.price,this.isImported,this.isTaxable)
@@ -56,6 +64,10 @@ export default class ProductModel implements ProductInterface{
 
 
         return this.priceAfterTax
+    }
+    generateFakeId(prefix =  " "):string {
+        const randLetter = String.fromCharCode(65 + Math.floor(Math.random() * 26));
+        return  randLetter + Date.now();
     }
 
 

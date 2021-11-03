@@ -10,11 +10,12 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.4.4",
-    "@mdi/font": "5.9.55",
+    "@mdi/font": "^5.9.55",
     "axios": "^0.21.4",
     "boxicons": "^2.0.7",
     "core-js": "^3.6.5",
     "idb": "^6.0.0",
+    "material-design-icons-iconfont": "^6.1.0",
     "moment": "^2.29.1",
     "read-excel-file": "^5.1.0",
     "register-service-worker": "^1.7.1",

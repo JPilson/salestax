@@ -52,7 +52,7 @@ export default class Utils {
         return Math.floor(Math.random() * Math.floor(max));
     }
 
-    static currency(valor:string|number,currency: string | null='AOA',showCurrency=true):string {
+    static currency(valor:string|number,currency ='EUR',showCurrency=true):string {
         const locale = "de-DE" //de-DE
         const  value: number = (typeof valor === "string")?parseFloat(valor):valor
         const options:NumberFormatOptions = showCurrency?{
@@ -63,7 +63,7 @@ export default class Utils {
         return new Intl.NumberFormat(locale, options).format(value)
 
     }
-    static generateFakeId(prefix =  " "):string {
+     generateFakeId(prefix =  " "):string {
         const date = new Date();
         return (prefix +  date.getUTCHours().toString() + date.getDate().toString().toString() + date.getUTCFullYear().toString()).trim()
 
@@ -75,11 +75,11 @@ export default class Utils {
 
     static  onThemeChange = (ThemeMediaQuery:MediaQueryListEvent|MediaQueryList,vuetifyTheme: Theme):void=>{
        // const systemTheme =  window.matchMedia("(prefers-color-scheme: dark)");
-        vuetifyTheme.dark = ThemeMediaQuery.matches
-        if(ThemeMediaQuery.matches)
-            store.dispatch("changeAppTheme", AppTheme.dark).then()
-        else
-            store.dispatch("changeAppTheme",AppTheme.light).then()
+       //  vuetifyTheme.dark = ThemeMediaQuery.matches
+       //  if(ThemeMediaQuery.matches)
+       //      store.dispatch("changeAppTheme", AppTheme.dark).then()
+       //  else
+       //      store.dispatch("changeAppTheme",AppTheme.light).then()
 
     }
 

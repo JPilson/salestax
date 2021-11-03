@@ -1,40 +1,56 @@
 <template>
-  <div>
-    <div class="ma-10 pa-10" >
-      <TextView :text="''"/>
-      <TextView :text="receipt" />
-    </div>
-    <v-btn ref="renderBtn" @click="renderReceipt" >
-<!--      <TextView text="Show Receipt" />-->
-    </v-btn>
-  </div>
+  <v-flex class="  d-flex flex-column removeScroll " style="width: content-box; overflow: scroll;display: grid;
+ align-items: center;" >
+    <v-flex class=" mt-10 " style="position: relative;  z-index: 1;  width: 100%;">
+      <v-flex class="mx-3" >
+        <TextView text="Thur 28, 2021" size="24" bold :color="colors.primaryText"/>
+        <TextView :text="`${order.totalOrder()} Items`" size="24" bold :color="colors.primaryText" class="my-2"/>
+        <v-divider dark style="height: 5px"/>
+      </v-flex>
+    </v-flex>
+
+    <v-flex class="d-flex flex-column justify-end mx-4 " style=";width: 95%; height: 80%;">
+<!--      <TextView :text="receipt" :color="colors.primaryText"/>-->
+      <v-flex style="overflow: scroll;margin-bottom: 20px;" class="removeScroll">
+        <ProductComponent type="cartItem" v-for="(product,index) in order.products" :key="`order_item_${index}`" :product="product" :invert-theme="true" @onAdd="addOneMore(index)" @onRemove="removeOne(index)" />
+
+      </v-flex>
+    </v-flex>
+
+    <v-flex class="d-flex flex-column justify-end mb-2 center " style="position: relative; bottom: 10px; width: 100% "  >
+      <div class="mx-2">
+        <v-btn block ref="renderBtn" @click="renderReceipt()" depressed min-height="60" style="border-radius: 20px;  ">
+          <TextView text="Order" bold/>
+        </v-btn>
+      </div>
+
+    </v-flex>
+  </v-flex>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import {Component, Prop} from "vue-property-decorator";
-import {ColorType} from "@/values/Colors";
+import Colors, { ColorType} from "@/values/Colors";
 import {LanguageType} from "@/values/Strings";
 import Order from "@/models/Order.model";
-import ProductModel, {ProductCategory} from "@/models/Product.model";
 import TextView from "@/utils/UI/TextView/TextView.vue";
+import ProductComponent from "@/components/ProductComponent.vue";
+
 
 @Component({
-  components: {TextView},
+  components: {ProductComponent, TextView},
 })
 export default class ShoppingCartComponent extends Vue {
 
   @Prop({})
   message!:string;
+  receipt = ""
 
-   receipt = ""
-  @Prop({default:new Order({products:[
-        new ProductModel({name:"Coding in War",isImported:false,price:12.49,category:ProductCategory.book}),
-        new ProductModel({name:"CLB",isImported:false,price:14.99,category:ProductCategory.discography}),
-        new ProductModel({name:"Chocolate",isImported:false,price:0.85,category:ProductCategory.food}),
+  get order():Order {
+    return this.$store.getters.shoppingCart
+  }
 
-      ]})})
-  order!:Order
   // get order():Order {
   //   return this.$store.getters.orders
   // }
@@ -43,8 +59,27 @@ export default class ShoppingCartComponent extends Vue {
     this.receipt = this.order.printOrderDetails();
   }
 
+  addOneMore(productIndex:number):void{
+     this.order.products[productIndex].total++
+  }
+  removeOne(productIndex:number):void{
+     if(this.order.products[productIndex].total>1){
+       this.order.products[productIndex].total --
+       return
+     }
+     this.order.products.splice(productIndex,1)
+     return;
+
+  }
+
+
+
+  get isDark(): boolean {
+    return this.$store.getters.isDark;
+  }
   get colors(): ColorType {
-    return this.$store.getters.colors;
+
+    return this.isDark ? Colors.light : Colors.dark
   }
   // responsible
 
@@ -52,9 +87,7 @@ export default class ShoppingCartComponent extends Vue {
     return this.$store.getters.strings;
   }
 
-  get isDark(): boolean {
-    return this.$store.getters.isDark;
-  }
+
   mounted(): void {
    // this.taxOrders()
 
@@ -62,5 +95,14 @@ export default class ShoppingCartComponent extends Vue {
 }
 </script>
 
-
+<style>
+.removeScroll::-webkit-scrollbar {
+  display: none;
 }
+.wrapper {
+  display: grid;
+  grid-template-rows: 20% 60% 20%;
+}
+
+</style>
+

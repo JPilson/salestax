@@ -1,5 +1,4 @@
 import ProductModel from "@/models/Product.model";
-import Utils from "@/utils/Utils";
 import TaxHelper from "@/utils/TaxHelper";
 
 interface OrderInterface {
@@ -25,6 +24,8 @@ export default class Order implements OrderInterface{
             this.products.push(...props.products)
             this.salesTax = props.salesTax ??0
             this.totalAmount = props.totalAmount ?? 0
+
+            this.calculateTaxOrder()
         }
             // this.id = Utils.generateFakeId("order")
     }
@@ -55,7 +56,26 @@ export default class Order implements OrderInterface{
         })
         output =  output +`\nSales Taxes: ${this.salesTax.toFixed(2)}\nTotal: ${this.totalAmount.toFixed(2)}`
         return output
+    }
+    addNewItem(product:ProductModel):void{
+        this.products.push(product)
+    }
 
+    /**
+     *
+     * @param moreOf represent the index of order in which the quantity needs to be increased
+     */
+    addOneMOre(moreOf:number):void{
+        this.products[moreOf].total ++
+    }
+
+    removeItem(itemIndex:number):void{
+        if(this.products[itemIndex].total > 1){
+            this.products[itemIndex].total--;
+            return
+        }
+
+        this.products.splice(itemIndex,1);
 
     }
 

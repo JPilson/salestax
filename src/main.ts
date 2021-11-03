@@ -7,6 +7,8 @@ import vuetify from './plugins/vuetify'
 import Vuesax from 'vuesax'
 import 'vuesax/dist/vuesax.css' //Vuesax styles
 import vuesaxOption from "@/plugins/vuesax";
+import 'material-design-icons-iconfont/dist/material-design-icons.css'
+
 
 Vue.config.productionTip = false
 Vue.use(Vuesax, vuesaxOption)

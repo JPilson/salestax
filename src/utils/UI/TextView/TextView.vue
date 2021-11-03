@@ -18,7 +18,7 @@
       transform:{},
       color:{},
       spacing:{},
-      lineSpacing:{},
+      lineSpacing:{ default:0},
       paddingTop:{},
       paddingRight:{},
       paddingBottom:{},

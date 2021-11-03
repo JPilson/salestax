@@ -4,18 +4,28 @@ import Colors, {AppTheme} from "@/values/Colors";
 import Strings from "@/values/Strings";
 import Order from "@/models/Order.model";
 import ProductModel, {ProductCategory} from "@/models/Product.model";
+import Assets from "@/assets/Assets";
+import dimension, {dimensionType} from "@/values/dimension";
 
 
-interface updateInterface<T>  {
+export interface updateInterface<T>  {
   data:T,
   at?:number,
   operation:"delete" | "update" | "replace" | "insert"
 }
 
-const theme:AppTheme = AppTheme.dark
-const products =   [ new ProductModel({name:"Coding in War",isImported:false,price:12.49,category:ProductCategory.book}),
-  new ProductModel({name:"Chocolate",isImported:false,price:0.85,category:ProductCategory.food}),
-  new ProductModel({name:"CLB",isImported:false,price:16.49,category:ProductCategory.discography})]
+const theme:AppTheme = AppTheme.light
+const products =   [
+    new ProductModel({name:"Book",isImported:false,price:12.49,category:ProductCategory.book,img:Assets.image.book}),
+    new ProductModel({name:"Chocolate",isImported:false,price:0.85,category:ProductCategory.food,img:Assets.image.chocolate}),
+    new ProductModel({name:"CLB",isImported:false,price:16.49,category:ProductCategory.discography,img:Assets.image.cd}),
+    new ProductModel({name:"Random Access Memory",isImported:false,price:20.49,category:ProductCategory.discography,img:Assets.image.daftPunk}),
+    new ProductModel({name:"KitKat",isImported:true,price:10.00,category:ProductCategory.food,img:Assets.image.kitkat}),
+    new ProductModel({name:"Zara Perfume",isImported:true,price:47.50,category:ProductCategory.other,img:Assets.image.zaraPerfume}),
+    new ProductModel({name:"Headache Pills",isImported:false,price:9.75,category:ProductCategory.medical,img:Assets.image.headPills}),
+    new ProductModel({name:"Perfume",isImported:false,price:18.99,category:ProductCategory.other,img:Assets.image.perfume}),
+
+]
 
 Vue.use(Vuex)
 export default new Vuex.Store({
@@ -23,11 +33,14 @@ export default new Vuex.Store({
     theme: theme as AppTheme,
     values:{
       colors:Colors[theme],
-      strings:Strings.en
+      strings:Strings.en,
+      dimensions:dimension.mobile
     },
+    isMobile:false,
     orders:[] as Array<Order>,
     shoppingCart: new Order({products:products}),
     products:products as Array<ProductModel>
+
 
 
   },
@@ -36,11 +49,19 @@ export default new Vuex.Store({
       state.theme = selectedTheme
       state.values.colors = Colors[selectedTheme]
     },
+    onScreenResize(state,payload:boolean){
+
+      state.isMobile = payload
+
+      state.values.dimensions =state.isMobile? dimension.mobile: dimension.default
+
+
+    },
     updateOrderList(state, payload:updateInterface<Order>):void{
       switch (payload.operation) {
         case "delete":{
           const index = payload.at ?? state.orders.findIndex(item => item.id == payload.data.id)
-          state.orders.splice(index);
+          state.orders.splice(index,1);
           break
         }
         case "insert":
@@ -52,10 +73,21 @@ export default new Vuex.Store({
           break
         }
       }
-
-
-
-
+    },
+    updateShoppingCart(state,payload:updateInterface<ProductModel>):void {
+      switch (payload.operation) {
+        case "insert":
+          state.shoppingCart.products.push(payload.data);
+          break;
+        case "replace":
+          state.shoppingCart.products[payload.at!] = payload.data;
+          break;
+        case "delete":
+          state.shoppingCart.products.splice(payload.at!,1);
+          break;
+        default:
+          break;
+      }
     }
 
 
@@ -66,7 +98,11 @@ export default new Vuex.Store({
     },
     updateOrderList(context:ActionContext<any, any>, payload:updateInterface<Order>){
       context.commit("updateOrderList",payload)
-    }
+    },
+    updateShoppingCart(context:ActionContext<any, any>, payload:updateInterface<ProductModel>){
+      context.commit("updateShoppingCart",payload)
+    },
+
 
   },
   modules: {
@@ -84,7 +120,17 @@ export default new Vuex.Store({
     },
     products(state):Array<ProductModel>{
       return state.products
+    },
+    theme(state) {
+      return state.theme
+    },
+    isMobile(state):boolean{
+      return  state.isMobile
+    },
+    dimensions(state):dimensionType{
+      return state.values.dimensions
     }
+
   }
 
 })
