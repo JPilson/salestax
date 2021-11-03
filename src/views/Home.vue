@@ -1,7 +1,8 @@
 <template>
   <div class="centered xs12 d-flex">
-    <v-flex   :class="isMobile?'':'ma-5 pa-5 xs9'  " style="border-radius: 30px;" :style="`height:${isMobile?'100%':'95vh'};background-color: #F5F5F5;`" >
-        <v-flex d-flex class="justify-end" v-if="!isMobile" >
+
+    <v-flex   :class="isMobile?'':'ma-5 pa-5 xs9 removeScroll'  " style="position: relative; overflow: scroll;border-radius: 30px;" :style="`height:${isMobile?'100%':'95vh'};background-color: #F5F5F5;`" >
+        <v-flex  d-flex class="justify-end " v-if="!isMobile" >
           <button style="border-radius: 10px; background-color: #e7e7e7 " v-ripple class="mx-2 pa-2  v-ripple__animation--enter" >
             <v-icon v-text="`grid_view`" color="black" large />
           </button>
@@ -32,9 +33,11 @@
   import ProductComponent from "@/components/ProductComponent.vue";
   import ProductModel from "@/models/Product.model";
   import {updateInterface} from "@/store";
+  import Receipt from "@/components/Receipt.vue";
 
   @Component({
     components: {
+      Receipt,
       ProductComponent,
       ShoppingCartComponent,
       TextView
@@ -55,12 +58,7 @@
     product = new ProductModel()
 
     onAddToCart(product:ProductModel):void{
-
-      const payload:updateInterface<ProductModel> = {
-        operation:"insert",
-        data:product
-      }
-      this.$store.dispatch("updateShoppingCart",payload)
+      this.$store.state.shoppingCart.addNewItem(product)
     }
 
     mounted(): void {
@@ -77,5 +75,8 @@
       display: grid;
       justify-content: center;
     align-items: center;
+  }
+  .removeScroll::-webkit-scrollbar {
+    display: none;
   }
 </style>

@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex, {ActionContext} from 'vuex'
 import Colors, {AppTheme} from "@/values/Colors";
 import Strings from "@/values/Strings";
-import Order from "@/models/Order.model";
+import Order, {priceUpdateType} from "@/models/Order.model";
 import ProductModel, {ProductCategory} from "@/models/Product.model";
 import Assets from "@/assets/Assets";
 import dimension, {dimensionType} from "@/values/dimension";
@@ -17,13 +17,20 @@ export interface updateInterface<T>  {
 const theme:AppTheme = AppTheme.light
 const products =   [
     new ProductModel({name:"Book",isImported:false,price:12.49,category:ProductCategory.book,img:Assets.image.book}),
+    new ProductModel({name:"CLB",isImported:false,price:14.99,category:ProductCategory.discography,img:Assets.image.cd}),
     new ProductModel({name:"Chocolate",isImported:false,price:0.85,category:ProductCategory.food,img:Assets.image.chocolate}),
-    new ProductModel({name:"CLB",isImported:false,price:16.49,category:ProductCategory.discography,img:Assets.image.cd}),
-    new ProductModel({name:"Random Access Memory",isImported:false,price:20.49,category:ProductCategory.discography,img:Assets.image.daftPunk}),
-    new ProductModel({name:"KitKat",isImported:true,price:10.00,category:ProductCategory.food,img:Assets.image.kitkat}),
+
+  new ProductModel({name:"KitKat",isImported:true,price:10.00,category:ProductCategory.food,img:Assets.image.kitkat}),
     new ProductModel({name:"Zara Perfume",isImported:true,price:47.50,category:ProductCategory.other,img:Assets.image.zaraPerfume}),
+
+  new ProductModel({name:"LV Perfume",isImported:true,price:27.99,category:ProductCategory.other,img:Assets.image.zaraPerfume}),
+  new ProductModel({name:"Perfume",isImported:false,price:18.99,category:ProductCategory.other,img:Assets.image.perfume}),
     new ProductModel({name:"Headache Pills",isImported:false,price:9.75,category:ProductCategory.medical,img:Assets.image.headPills}),
-    new ProductModel({name:"Perfume",isImported:false,price:18.99,category:ProductCategory.other,img:Assets.image.perfume}),
+  new ProductModel({name:"Squid Chocolate",isImported:true,price:11.25,category:ProductCategory.food,img:Assets.image.kitkat}),
+
+  // new ProductModel({name:"Random Access Memory",isImported:false,price:20.49,category:ProductCategory.discography,img:Assets.image.daftPunk}),
+
+
 
 ]
 
@@ -38,7 +45,12 @@ export default new Vuex.Store({
     },
     isMobile:false,
     orders:[] as Array<Order>,
-    shoppingCart: new Order({products:products}),
+    shoppingCart: new Order({products:[
+        new ProductModel({name:"Book",isImported:false,price:12.49,category:ProductCategory.book,img:Assets.image.book,updateParent:true}),
+        new ProductModel({name:"CLB",isImported:false,price:14.99,category:ProductCategory.discography,img:Assets.image.cd,updateParent:true}),
+        new ProductModel({name:"Chocolate",isImported:false,price:0.85,category:ProductCategory.food,img:Assets.image.chocolate,updateParent:true}),
+
+      ]}),
     products:products as Array<ProductModel>
 
 
@@ -88,8 +100,10 @@ export default new Vuex.Store({
         default:
           break;
       }
+    },
+    onShoppingCartItemUpdated(state,payload: {price:number,operation:priceUpdateType}):void{
+      state.shoppingCart.onProductPriceUpdated(payload.price,payload.operation)
     }
-
 
   },
   actions: {
@@ -101,6 +115,9 @@ export default new Vuex.Store({
     },
     updateShoppingCart(context:ActionContext<any, any>, payload:updateInterface<ProductModel>){
       context.commit("updateShoppingCart",payload)
+    },
+    onShoppingCartItemUpdated(context:ActionContext<any, any>, payload){
+      context.commit("onShoppingCartItemUpdated",payload)
     },
 
 

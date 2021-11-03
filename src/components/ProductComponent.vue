@@ -3,28 +3,27 @@
     <div v-if="typeProp === 'cartItem'">
       <v-flex >
         <v-flex d-flex justify-space-between align-center>
-          <div>
+          <div class="mt-3">
             <TextView :text="productSync.name" bold :color="colors.primaryText"/>
-            <TextView :text="productSync.category" :color="colors.primaryText" size="10" caps/>
+            <TextView :text="productSync.category" :color="colors.secondaryText" size="10" caps/>
           </div>
-          <TextView :text="utils.currency(productSync.price)" :color="colors.primaryText" />
+          <TextView :text="utils.currency(productSync.priceAfterTax)" :color="colors.primaryText" />
         </v-flex>
         <v-flex d-flex justify-space-between align-center>
           <TextView text="Imported"  :color="colors.primaryText" v-if="productSync.isImported" />
         </v-flex>
         <v-flex d-flex justify-space-between align-center>
-
-          <TextView :text="`Quantity(${productSync.total})`"  :color="colors.primaryText" />
+          <TextView :text="`Quantity(${productSync.quantity})`" size="12" :color="colors.secondaryText" />
           <v-flex d-flex justify-end algin-center>
             <v-btn icon>
               <v-icon v-text="`remove`" :color="colors.primaryText" @click="onRemoveClicked" />
             </v-btn>
-            <v-btn @click="onAddClicked"  icon style="background: #00FF6837; border-radius: 8px" small>
-              <v-icon v-text="`add`" :color="colors.primaryText" />
+            <v-btn @click="onAddClicked"  icon style="background: #fff; border-radius: 8px" small>
+              <v-icon v-text="`add`" color="#000" />
             </v-btn>
           </v-flex>
         </v-flex>
-        <v-divider dark class="my-1"  />
+        <v-divider dark class="my-1" style="height: 10px!important;background-color: white"  />
 
       </v-flex>
     </div>

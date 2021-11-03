@@ -28,15 +28,22 @@ export default class TaxHelper {
         let importAmount = 0
 
         if(isImported)
-            importAmount =  parseFloat((price * TaxRate.importTax).toFixed(2));
+            importAmount =  this.importedTaxRate(price)
 
         if(isTaxable)
-            basicSalesTaxAmount = parseFloat((price * TaxRate.basicSalesTax).toFixed(2));
+            basicSalesTaxAmount = this.baseTaxRate(price)
 
         const roundedUpTaxAmount = this.roundUpPrice(basicSalesTaxAmount + importAmount);
 
         return parseFloat(( price + roundedUpTaxAmount).toFixed(2));
     }
+    private importedTaxRate(price:number):number {
+        return parseFloat((price * TaxRate.importTax).toFixed(2));
+    }
+    private baseTaxRate(price:number):number{
+        return parseFloat((price * TaxRate.basicSalesTax).toFixed(2));
+    }
+
 
     protected roundUpPrice(price: number, roundUpTo = 0.0):number {
         return   parseFloat((Math.ceil(price * 20.0 - roundUpTo)/20.0).toFixed(2))

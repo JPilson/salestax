@@ -30,14 +30,13 @@ const confirmColor = '#8EFF9B',
 export default  {
     light:{
         primaryText:'#000000',
-        secondaryText:'#515151',
+        secondaryText:'#FFFFFF99',
         card:"#f1f1f1",
         dashCardColor:dashCardColor,
         confirm:confirmColor,
         addVocabButton:addVocabButtonColor,
         rankColor:rankColor,
         background:"#ffffff",
-
         homePlayBtn:"#bee4ff",
         homePlayBtnText:"#0095ff"
 

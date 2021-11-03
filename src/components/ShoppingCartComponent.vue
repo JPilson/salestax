@@ -4,7 +4,8 @@
     <v-flex class=" mt-10 " style="position: relative;  z-index: 1;  width: 100%;">
       <v-flex class="mx-3" >
         <TextView text="Thur 28, 2021" size="24" bold :color="colors.primaryText"/>
-        <TextView :text="`${order.totalOrder()} Items`" size="24" bold :color="colors.primaryText" class="my-2"/>
+        <TextView :text="`${order.totalOrder()} Items`" size="18" bold :color="colors.primaryText" class="my-2"/>
+        <TextView :text="utils.currency(order.totalAmount)" size="24" bold :color="colors.primaryText" class="my-2"/>
         <v-divider dark style="height: 5px"/>
       </v-flex>
     </v-flex>
@@ -36,6 +37,7 @@ import {LanguageType} from "@/values/Strings";
 import Order from "@/models/Order.model";
 import TextView from "@/utils/UI/TextView/TextView.vue";
 import ProductComponent from "@/components/ProductComponent.vue";
+import Utils from "@/utils/Utils";
 
 
 @Component({
@@ -45,7 +47,7 @@ export default class ShoppingCartComponent extends Vue {
 
   @Prop({})
   message!:string;
-  receipt = ""
+  utils = Utils
 
   get order():Order {
     return this.$store.getters.shoppingCart
@@ -56,19 +58,17 @@ export default class ShoppingCartComponent extends Vue {
   // }
 
   renderReceipt():void{
-    this.receipt = this.order.printOrderDetails();
+    // this.receipt = this.order.printOrderDetails();
   }
 
   addOneMore(productIndex:number):void{
-     this.order.products[productIndex].total++
+     this.order.products[productIndex].updateItemQuantity("add")
+
   }
   removeOne(productIndex:number):void{
-     if(this.order.products[productIndex].total>1){
-       this.order.products[productIndex].total --
-       return
-     }
-     this.order.products.splice(productIndex,1)
-     return;
+    this.order.products[productIndex].updateItemQuantity("remove",()=>{
+      this.order.products.splice(productIndex,1)
+    })
 
   }
 
@@ -96,9 +96,7 @@ export default class ShoppingCartComponent extends Vue {
 </script>
 
 <style>
-.removeScroll::-webkit-scrollbar {
-  display: none;
-}
+
 .wrapper {
   display: grid;
   grid-template-rows: 20% 60% 20%;

@@ -1,5 +1,8 @@
 import ProductModel from "@/models/Product.model";
 import TaxHelper from "@/utils/TaxHelper";
+import store,{updateInterface} from "@/store";
+
+export type priceUpdateType = "increment" | "decrement"
 
 interface OrderInterface {
 
@@ -16,7 +19,8 @@ export default class Order implements OrderInterface{
     id!: string;
     products: Array<ProductModel> = [];
     salesTax = 0;
-    totalAmount = 0;
+    totalAmount = 0.0;
+
     constructor(props?:OrderInterface) {
         const date = new Date();
         if(props){
@@ -36,13 +40,40 @@ export default class Order implements OrderInterface{
         return this.products.length ;
     }
 
-    calculateTaxOrder():void {
+    calculateTaxOrder(forProductAt?:number):void {
+        if(forProductAt){
+            // this.products[forProductAt]
+            //TODO:
+        }
         this.products.forEach(product => {
-            product.setPriceAfterTax() // To make sure that the priceAfterTaxes is set
+            // product.setPriceAfterTax(true) // To make sure that the priceAfterTaxes is set
             this.salesTax = parseFloat((this.salesTax + product.totalOfTax).toFixed(2))
-            this.totalAmount  =  parseFloat((this.totalAmount + product.priceAfterTax).toFixed(2))
+
         })
     }
+
+    /**
+     * @Function onProductPriceUpdated is used to notify the parent (Order) that the child (Product/item) prices
+     * has been been updated
+     * @param price
+     * @param operation
+     */
+    onProductPriceUpdated(price:number,operation:priceUpdateType = 'increment'):void{
+        try {
+
+            if (operation === "increment") {
+                this.totalAmount = parseFloat((this.totalAmount + price).toFixed(2))
+            } else {
+                if (this.totalAmount > 0)
+                    this.totalAmount = parseFloat((this.totalAmount - price).toFixed(2))
+
+            }
+        } catch (e) {
+            console.log(e)
+        }
+
+    }
+
 
     /**
      * For Test Purpose
@@ -58,7 +89,16 @@ export default class Order implements OrderInterface{
         return output
     }
     addNewItem(product:ProductModel):void{
-        this.products.push(product)
+
+        product.updateParent = true
+        product.setState = store
+
+        const payload:updateInterface<ProductModel> = {
+            operation:"insert",
+            data:product
+        }
+        this.onProductPriceUpdated(product.priceAfterTax);
+        store.dispatch("updateShoppingCart",payload)
     }
 
     /**
@@ -66,12 +106,13 @@ export default class Order implements OrderInterface{
      * @param moreOf represent the index of order in which the quantity needs to be increased
      */
     addOneMOre(moreOf:number):void{
-        this.products[moreOf].total ++
+        this.products[moreOf].quantity ++
+
     }
 
     removeItem(itemIndex:number):void{
-        if(this.products[itemIndex].total > 1){
-            this.products[itemIndex].total--;
+        if(this.products[itemIndex].quantity > 1){
+            this.products[itemIndex].quantity--;
             return
         }
 
