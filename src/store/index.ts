@@ -46,9 +46,9 @@ export default new Vuex.Store({
     isMobile:false,
     orders:[] as Array<Order>,
     shoppingCart: new Order({products:[
-        new ProductModel({name:"Book",isImported:false,price:12.49,category:ProductCategory.book,img:Assets.image.book,updateParent:true}),
-        new ProductModel({name:"CLB",isImported:false,price:14.99,category:ProductCategory.discography,img:Assets.image.cd,updateParent:true}),
-        new ProductModel({name:"Chocolate",isImported:false,price:0.85,category:ProductCategory.food,img:Assets.image.chocolate,updateParent:true}),
+        //new ProductModel({name:"Book",isImported:false,price:12.49,category:ProductCategory.book,img:Assets.image.book,updateParent:true}),
+        //new ProductModel({name:"CLB",isImported:false,price:14.99,category:ProductCategory.discography,img:Assets.image.cd,updateParent:true}),
+        //new ProductModel({name:"Chocolate",isImported:false,price:0.85,category:ProductCategory.food,img:Assets.image.chocolate,updateParent:true}),
 
       ]}),
     products:products as Array<ProductModel>
@@ -62,12 +62,8 @@ export default new Vuex.Store({
       state.values.colors = Colors[selectedTheme]
     },
     onScreenResize(state,payload:boolean){
-
       state.isMobile = payload
-
       state.values.dimensions =state.isMobile? dimension.mobile: dimension.default
-
-
     },
     updateOrderList(state, payload:updateInterface<Order>):void{
       switch (payload.operation) {
@@ -101,8 +97,11 @@ export default new Vuex.Store({
           break;
       }
     },
-    onShoppingCartItemUpdated(state,payload: {price:number,operation:priceUpdateType}):void{
-      state.shoppingCart.onProductPriceUpdated(payload.price,payload.operation)
+    createNewOrder(state):void{
+      state.shoppingCart =  new Order();
+    },
+    onShoppingCartItemUpdated(state,payload: {price:number,tax:number,operation:priceUpdateType}):void{
+      state.shoppingCart.onProductPriceUpdated(payload.price,payload.tax,payload.operation)
     }
 
   },

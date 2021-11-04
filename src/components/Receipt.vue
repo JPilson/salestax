@@ -1,14 +1,14 @@
 <template>
-  <v-flex>
+  <v-flex xs12 >
     <div class="mx-4">
       <TextView text="Receipt" bold/>
       <v-flex d-flex justify-space-between>
         <TextView text="Order: 8470053"/>
-        <TextView text="Sep 28 , 2021"/>
+        <TextView :text="utils.formatDate()" caps/>
       </v-flex>
     </div>
     <v-flex >
-      <TextView text="Payment Summary" bold caps size="24" class="my-10 mx-4"/>
+      <TextView text="Payment Summary" bold  size="18" class="mt-10 mb-5 mx-4"/>
       <v-simple-table class="elevation-0" style="background-color: transparent">
         <template v-slot:default>
           <thead>
@@ -24,7 +24,11 @@
           >
             <td class="text-left" >{{ item.name }}</td>
             <td class="text-center">{{ item.quantity }}</td>
-            <td class="text-right">{{ utils.currency(item.priceAfterTax) }}</td>
+            <td class="text-right">{{ utils.currency(item.priceAfterTax) }}
+                <v-btn icon class="mx-2" @click="removeOne(index)">
+                  <v-icon v-text="`delete`" small />
+                </v-btn>
+            </td>
           </tr>
           </tbody>
 
@@ -34,7 +38,7 @@
       <v-flex class="my-10" >
         <v-flex d-flex justify-space-between>
           <TextView text="Sales Tax" size="14"  />
-          <TextView  text="300"/>
+          <TextView  :text="utils.currency(order.salesTax)"/>
         </v-flex>
         <v-flex d-flex justify-space-between class="mt-5">
           <TextView text="Total" size="24" bold />
@@ -43,6 +47,11 @@
       </v-flex>
 
     </v-flex>
+    <div class="mx-2">
+      <v-btn block ref="renderBtn" depressed min-height="60" style="border-radius: 20px;  " @click="done">
+        <TextView text="Done" bold/>
+      </v-btn>
+    </div>
   </v-flex>
 </template>
 
@@ -59,8 +68,22 @@ import Utils from "@/utils/Utils";
   components: {TextView},
 })
 export default class Receipt extends Vue {
-  tableHeader = [{name:"Items",position:"text-left"},{name:"Quantity",position:"text-center"},{name:"Price",position:"text-right"},]
+  tableHeader = [{name:"Items",position:"text-left"},{name:"Quantity",position:"text-center"},{name:"Price",position:this.$store.getters.isMobile?"text-center":"text-right"},]
   utils = Utils
+
+  done():void {
+    this.$store.commit("createNewOrder");
+    this.$emit("done")
+  }
+
+
+  removeOne(productIndex:number):void{
+    this.order.products[productIndex].updateItemQuantity("remove",()=>{
+      this.order.products.splice(productIndex,1)
+    })
+
+  }
+
 
   get colors(): ColorType {
     return this.$store.getters.colors;
@@ -75,6 +98,9 @@ export default class Receipt extends Vue {
 
   get isDark(): boolean {
     return this.$store.getters.isDark;
+  }
+  get isMobile():boolean {
+    return  this.$store.getters.isMobile
   }
 }
 </script>

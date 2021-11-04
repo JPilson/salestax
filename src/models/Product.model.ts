@@ -83,16 +83,16 @@ export default class ProductModel implements ProductInterface{
         try {
             // 1
             const basePriceAfterTax =  this.taxHelper.valueAfterTax(this.price, this.isImported, this.isTaxable) // Base on quantity of one
-            const baseSalesTax =  parseFloat((this.priceAfterTax - this.price).toFixed(2)) // Base on quantity of one
+            const baseSalesTax =  parseFloat((basePriceAfterTax - this.price).toFixed(2)) // Base on quantity of one
             // 2
             this.priceAfterTax = parseFloat((basePriceAfterTax * this.quantity).toFixed(2))  //  base on quantity greater than or equal 1
             this.totalOfTax = parseFloat((baseSalesTax * this.quantity).toFixed(2)) // base on quantity greater than or equal 1
 
 
             if(this.updateParent) {
-                console.log("update now")
                 const payload = {
                     price: isNew ? this.priceAfterTax : basePriceAfterTax,
+                    tax: isNew?this.totalOfTax : baseSalesTax,
                     operation:updateType
                 }
                 this.storeReference.dispatch("onShoppingCartItemUpdated",payload )

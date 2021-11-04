@@ -56,16 +56,23 @@ export default class Order implements OrderInterface{
      * @Function onProductPriceUpdated is used to notify the parent (Order) that the child (Product/item) prices
      * has been been updated
      * @param price
+     * @param tax
      * @param operation
      */
-    onProductPriceUpdated(price:number,operation:priceUpdateType = 'increment'):void{
+    onProductPriceUpdated(price:number,tax:number,operation:priceUpdateType = 'increment'):void{
         try {
 
             if (operation === "increment") {
                 this.totalAmount = parseFloat((this.totalAmount + price).toFixed(2))
+                this.salesTax = parseFloat((this.salesTax + tax).toFixed(2))
             } else {
-                if (this.totalAmount > 0)
+                if (this.totalAmount > 0) {
                     this.totalAmount = parseFloat((this.totalAmount - price).toFixed(2))
+                }
+                if(this.salesTax > 0){
+                    this.salesTax = parseFloat((this.salesTax - tax).toFixed(2))
+
+                }
 
             }
         } catch (e) {
@@ -97,7 +104,7 @@ export default class Order implements OrderInterface{
             operation:"insert",
             data:product
         }
-        this.onProductPriceUpdated(product.priceAfterTax);
+        this.onProductPriceUpdated(product.priceAfterTax,product.totalOfTax);
         store.dispatch("updateShoppingCart",payload)
     }
 

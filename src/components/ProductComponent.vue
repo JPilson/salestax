@@ -10,7 +10,7 @@
           <TextView :text="utils.currency(productSync.priceAfterTax)" :color="colors.primaryText" />
         </v-flex>
         <v-flex d-flex justify-space-between align-center>
-          <TextView text="Imported"  :color="colors.primaryText" v-if="productSync.isImported" />
+          <TextView text="Imported"  :color="colors.secondaryText" size="12" v-if="productSync.isImported" />
         </v-flex>
         <v-flex d-flex justify-space-between align-center>
           <TextView :text="`Quantity(${productSync.quantity})`" size="12" :color="colors.secondaryText" />
@@ -92,6 +92,8 @@ export default class ProductComponent extends Vue {
   @PropSync("type",{default:'grid'})
   typeProp!: 'list'| 'grid' |'cartItem'
 
+
+
   @Prop()
   invertTheme!:boolean
   // @Prop()
@@ -100,6 +102,8 @@ export default class ProductComponent extends Vue {
 
 
   readonly  utils = Utils;
+
+
 
   private onAddClicked():void{
    this.$emit("onAdd")

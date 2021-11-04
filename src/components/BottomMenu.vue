@@ -1,7 +1,7 @@
 <template>
   <div>
-    <vs-dialog overflow-hidden scroll full-screen v-model="showCart"  >
-      <ShoppingCartComponent style="right: 25px;top:-10px"/>
+    <vs-dialog   v-model="cartDialogTrigger"   >
+      <Receipt @done="cartDialogTrigger = false"  />
     </vs-dialog>
     <v-bottom-navigation height="70" color="transparent" app class="elevation-0 py-3  align-center"
                          active-class="activeMenu">
@@ -18,7 +18,7 @@
       </v-btn>
 
       <v-btn ref="renderBtn" class="mr-2" color="#F5F5F5" depressed min-width="180" height="50"
-             style="border-radius: 11px">
+             style="border-radius: 11px" @click="showCart()">
         <TextView text="Check Out" spacing="0" :size="dimension.normalText" bold color="black"/>
       </v-btn>
     </v-bottom-navigation>
@@ -34,13 +34,19 @@ import TextView from "@/utils/UI/TextView/TextView.vue";
 import Order from "@/models/Order.model";
 import {dimensionType} from "@/values/dimension";
 import ShoppingCartComponent from "@/components/ShoppingCartComponent.vue";
+import Receipt from "@/components/Receipt.vue";
 
 @Component({
-  components: {ShoppingCartComponent, TextView},
+  components: {Receipt, ShoppingCartComponent, TextView},
 })
 export default class BottomMenu extends Vue {
   activeTab = 0
-  showCart =  true
+  cartDialogTrigger =false
+
+  showCart():void {
+    this.cartDialogTrigger = true
+  }
+
   get colors(): ColorType {
     return this.$store.getters.colors;
   }

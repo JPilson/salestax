@@ -37,14 +37,15 @@ export default class Utils {
      "MM-DD-YYYY",
      "DD-MM-YYYY",
      "MMM YYYY,DD",
+     "MM DD,YYYY",
      "MMMM"
  ];
 
 
 
 
-    public static formatDate(date:Date|string|number,format:dateFormats):string{
-        const dateX = new Date(date)
+    public static formatDate(date?:Date|string|number,format:dateFormats = dateFormats.MMMYYYYDD):string{
+        const dateX = date?new Date(date) : new Date()
         return moment(dateX).format(Utils.dateFormats[format]);
     }
 
