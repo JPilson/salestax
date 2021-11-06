@@ -77,7 +77,7 @@ export default class ShoppingCartComponent extends Vue {
   }
   removeOne(productIndex:number):void{
     this.order.products[productIndex].updateItemQuantity("remove",()=>{
-      this.order.products.splice(productIndex,1)
+      this.order.removeItem(productIndex)
     })
 
   }

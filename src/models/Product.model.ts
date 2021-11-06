@@ -3,7 +3,7 @@ import {Store} from "vuex";
 import {priceUpdateType} from "@/models/Order.model";
 
 
-interface ProductInterface {
+export interface ProductInterface {
     id?:string
     name:string;
     description?:string

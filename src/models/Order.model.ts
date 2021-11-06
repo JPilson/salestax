@@ -1,6 +1,8 @@
 import ProductModel from "@/models/Product.model";
 import TaxHelper from "@/utils/TaxHelper";
-import store,{updateInterface} from "@/store";
+import {Store} from "vuex";
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 
 export type priceUpdateType = "increment" | "decrement"
 
@@ -11,7 +13,9 @@ interface OrderInterface {
     products:Array<ProductModel>
     salesTax?:number
     totalAmount?:number
-    totalOrder?:()=> number
+    totalOrder?:()=> number,
+    onProductPriceUpdated?:(price:number,tax:number,operation:priceUpdateType)=>void
+    addNewItem?:(product:ProductModel)=>void
 
 }
 export default class Order implements OrderInterface{
@@ -20,17 +24,20 @@ export default class Order implements OrderInterface{
     products: Array<ProductModel> = [];
     salesTax = 0;
     totalAmount = 0.0;
+    storeRef!:Store<any> | undefined
 
-    constructor(props?:OrderInterface) {
+    constructor(props?:OrderInterface,store?:Store<any>) {
         const date = new Date();
+        this.storeRef = store
         if(props){
             this.id = (date.getUTCHours().toString() + date.getDate().toString().toString() + date.getUTCFullYear().toString()).trim()
             this.products.push(...props.products)
             this.salesTax = props.salesTax ??0
             this.totalAmount = props.totalAmount ?? 0
 
-            this.calculateTaxOrder()
+            this.calculateTaxOrder() // In case saved instance of shopping cart Exists.
         }
+
             // this.id = Utils.generateFakeId("order")
     }
 
@@ -87,34 +94,33 @@ export default class Order implements OrderInterface{
      */
     printOrderDetails():string {
         let output = ""
-        this.calculateTaxOrder();
+        // this.calculateTaxOrder();
+        this.totalAmount = 0
         this.products.forEach(product => {
-            output =  output +`\n${product.name}: ${product.priceAfterTax.toFixed(2)}`
+            output =  output +`\n${product.quantity}${product.isImported? " imported":''} ${product.name}: ${product.priceAfterTax.toFixed(2)}`
+           this.totalAmount =  parseFloat((this.totalAmount + product.priceAfterTax).toFixed(2))
 
         })
         output =  output +`\nSales Taxes: ${this.salesTax.toFixed(2)}\nTotal: ${this.totalAmount.toFixed(2)}`
         return output
     }
+
+    /**
+     *
+     * @param product
+     */
     addNewItem(product:ProductModel):void{
 
         product.updateParent = true
-        product.setState = store
+        if(this.storeRef)   product.setState= this.storeRef
 
-        const payload:updateInterface<ProductModel> = {
+        const payload= {
             operation:"insert",
             data:product
         }
         this.onProductPriceUpdated(product.priceAfterTax,product.totalOfTax);
-        store.dispatch("updateShoppingCart",payload)
-    }
-
-    /**
-     *
-     * @param moreOf represent the index of order in which the quantity needs to be increased
-     */
-    addOneMOre(moreOf:number):void{
-        this.products[moreOf].quantity ++
-
+       if(this.storeRef)
+           this.storeRef.dispatch("updateShoppingCart",payload)
     }
 
     removeItem(itemIndex:number):void{

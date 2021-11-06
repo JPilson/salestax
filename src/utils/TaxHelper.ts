@@ -7,7 +7,7 @@ enum TaxRate {
 
 export default class TaxHelper {
     constructor() {
-    //   TODO
+    //
     }
 
     isProductTaxable(productCategory:ProductCategory):boolean {
@@ -37,10 +37,10 @@ export default class TaxHelper {
 
         return parseFloat(( price + roundedUpTaxAmount).toFixed(2));
     }
-    private importedTaxRate(price:number):number {
+    protected importedTaxRate(price:number):number {
         return parseFloat((price * TaxRate.importTax).toFixed(2));
     }
-    private baseTaxRate(price:number):number{
+    protected baseTaxRate(price:number):number{
         return parseFloat((price * TaxRate.basicSalesTax).toFixed(2));
     }
 

@@ -45,12 +45,7 @@ export default new Vuex.Store({
     },
     isMobile:false,
     orders:[] as Array<Order>,
-    shoppingCart: new Order({products:[
-        //new ProductModel({name:"Book",isImported:false,price:12.49,category:ProductCategory.book,img:Assets.image.book,updateParent:true}),
-        //new ProductModel({name:"CLB",isImported:false,price:14.99,category:ProductCategory.discography,img:Assets.image.cd,updateParent:true}),
-        //new ProductModel({name:"Chocolate",isImported:false,price:0.85,category:ProductCategory.food,img:Assets.image.chocolate,updateParent:true}),
-
-      ]}),
+    shoppingCart: new Order(),
     products:products as Array<ProductModel>
 
 
@@ -61,10 +56,22 @@ export default new Vuex.Store({
       state.theme = selectedTheme
       state.values.colors = Colors[selectedTheme]
     },
+    /**
+     * This function is used to update the the dimensions of the app for
+     * better responsiveness
+     * @param state
+     * @param payload
+     */
     onScreenResize(state,payload:boolean){
       state.isMobile = payload
       state.values.dimensions =state.isMobile? dimension.mobile: dimension.default
     },
+
+    /**
+     * This function is responsible to manage list of Orders
+     * @param state
+     * @param payload
+     */
     updateOrderList(state, payload:updateInterface<Order>):void{
       switch (payload.operation) {
         case "delete":{
@@ -82,7 +89,13 @@ export default new Vuex.Store({
         }
       }
     },
-    updateShoppingCart(state,payload:updateInterface<ProductModel>):void {
+
+    /**
+     *
+     * @param state
+     * @param payload
+     */
+    updateShoppingCart: function (state, payload: updateInterface<ProductModel>): void {
       switch (payload.operation) {
         case "insert":
           state.shoppingCart.products.push(payload.data);
@@ -91,12 +104,17 @@ export default new Vuex.Store({
           state.shoppingCart.products[payload.at!] = payload.data;
           break;
         case "delete":
-          state.shoppingCart.products.splice(payload.at!,1);
+          state.shoppingCart.products.splice(payload.at!, 1);
           break;
         default:
           break;
       }
     },
+
+    /**
+     *
+     * @param state
+     */
     createNewOrder(state):void{
       state.shoppingCart =  new Order();
     },

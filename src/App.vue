@@ -35,6 +35,7 @@ export default class App extends Vue {
 
   beforeMount():void{
     this.onResize()
+    this.$store.state.shoppingCart.storeRef = this.$store
     this.mediaQueryList = window.matchMedia("(prefers-color-scheme: dark)");
 
     Utils.onThemeChange(this.mediaQueryList,this.$vuetify.theme)
